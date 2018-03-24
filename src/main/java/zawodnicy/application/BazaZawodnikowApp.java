@@ -2,7 +2,9 @@ package zawodnicy.application;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -21,6 +23,13 @@ public class BazaZawodnikowApp {
 			
 			ZawodnikController zawodnikController = new ZawodnikController(connect);
 			zawodnikController.selectAll().forEach(z -> System.out.println(z));
+			Map<String, String> zawodnik = getZawodnikFromUser();
+			System.out.println("Zawodnik: " + zawodnik);
+			
+			DataController dataController = new DataController();
+			dataController.insert(zawodnik, "zawodnicy");
+			System.out.println("Zaktualizowana lista zawodników: ");
+			zawodnikController.selectAll().forEach(z -> System.out.println(z));
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -36,7 +45,7 @@ public class BazaZawodnikowApp {
 
 	}
 	
-	private static Zawodnik getZawodnikFromUser () {
+	private static Map<String, String> getZawodnikFromUser () {
 		
 		Scanner sc1 = new Scanner(System.in);
 		
@@ -44,10 +53,13 @@ public class BazaZawodnikowApp {
 		System.out.println("Podaj dane zawodnika:");
 		DataController dataController = new DataController();
 		List<String> labels = dataController.getLabels("zawodnicy");
+		Map<String, String> daneZawodnika = new HashMap<>();
 		for (String string : labels) {
 			System.out.println("Wpisz " + string + ": ");
-			
+			daneZawodnika.put(string, sc1.nextLine());
 		}
+		sc1.close();
+		return daneZawodnika;
 	}
 
 }
